@@ -1,0 +1,36 @@
+# https://medium.com/lseg-developer-community/how-to-test-rest-api-with-visual-studio-code-rest-client-extensions-9f2e061d0299
+
+### local 
+POST http://127.0.0.1:4242/live-timing HTTP/1.1
+Content-Type: application/json
+
+{
+    "server": 0, 
+    "force_download":true, 
+    "name": "Qualy",
+    "preview_pattern": "https://domain.com/wp-content/uploads/logos/%s.png"
+}
+
+### Server Internal
+POST http://192.168.1.10:4242/live-timing HTTP/1.1
+Content-Type: application/json
+ 
+{  
+    "server": 0, 
+    "force_download":false, 
+    "name": "Qualy",
+    "preview_pattern": "https://domain.com/wp-content/uploads/logos/%s.png"
+}
+
+
+### Server Public 
+POST https://acsm.domain.com/live-timing HTTP/1.1
+Authorization: {{auth}}
+Content-Type: application/json
+
+{  
+    "server": 0, 
+    "force_download":false, 
+    "name": "Qualy",
+    "preview_pattern": "https://domain.com/wp-content/uploads/logos/%s.png"
+}

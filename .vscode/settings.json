@@ -1,0 +1,13 @@
+{
+    "cSpell.words": [
+        "acsm",
+        "Hotlap",
+        "Hotlaps",
+        "leaderboard"
+    ],
+    "rest-client.environmentVariables": {
+        "prod": {
+            "auth": ""
+        }
+    }
+}

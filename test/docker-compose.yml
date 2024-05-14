@@ -1,0 +1,14 @@
+services:
+  selenium-chrome:
+    container_name: selenium-chrome
+    image: selenium/standalone-chrome:4.8.3
+    restart: unless-stopped
+    ports:
+      - '4444:4444'
+      - '7900:7900'
+    shm_size: 2gb
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "10"
+        max-size: "10m"
