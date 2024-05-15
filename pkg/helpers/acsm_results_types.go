@@ -103,3 +103,17 @@ type ACSMResults struct {
 	ChampionshipID string `json:"ChampionshipID"`
 	RaceWeekendID  string `json:"RaceWeekendID"`
 }
+
+type ACSMResultsList struct {
+	NumPages    int    `json:"num_pages"`
+	CurrentPage int    `json:"current_page"`
+	SortType    string `json:"sort_type"`
+	Results     []struct {
+		Track          string    `json:"track"`
+		TrackLayout    string    `json:"track_layout,omitempty"`
+		SessionType    string    `json:"session_type"`
+		Date           time.Time `json:"date"`
+		ResultsJSONURL string    `json:"results_json_url"`
+		ResultsPageURL string    `json:"results_page_url"`
+	} `json:"results"`
+}

@@ -1,9 +1,9 @@
 package server
 
 import (
+	"acsm-live_timing-parser/pkg/acsm_parser"
 	"acsm-live_timing-parser/pkg/downloader"
 	"acsm-live_timing-parser/pkg/helpers"
-	"acsm-live_timing-parser/pkg/leaderboard_parser"
 	"encoding/json"
 	"fmt"
 	"log/slog"
@@ -83,7 +83,7 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 		}
 		if data.ForceDownload || err != nil || time.Since(info.ModTime()) > s.ScrapeConfig.LeaderBoardJsonTtl {
 			slog.Debug(fmt.Sprintf("[%s] Retrieving leaderboard for server %d", reqId, data.Server))
-			downloader := downloader.NewDownloader(
+			downloadHandler := downloader.NewDownloader(
 				s.ScrapeConfig.ChromeDriverPath,
 				s.ScrapeConfig.SeleniumUrl,
 				s.ScrapeConfig.User,
@@ -92,7 +92,7 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 				data.Server,
 				false)
 			var dErr error
-			jsonStr, dErr = downloader.Download()
+			jsonStr, dErr = downloadHandler.Download(downloader.LiveTimingApiEndpoint, nil)
 			if dErr != nil {
 				slog.Error(fmt.Sprintf("[%s] Cannot download leaderboard json: %v", reqId, dErr))
 				// In case of tmp file doesn't exist return with error
@@ -115,7 +115,7 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 			}
 
 			slog.Debug(fmt.Sprintf("[%s] Parsing JSON retrieved from API", reqId))
-			liveTiming, err = leaderboard_parser.ReadJson(jsonStr)
+			liveTiming, err = acsm_parser.ReadLeaderBoardJson(jsonStr)
 			if err != nil {
 				slog.Error(fmt.Sprintf("[%s] Cannot parse leaderboard json value %q: %v", reqId, jsonPath, err))
 				end <- LiveTimingResult{
@@ -145,7 +145,7 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 			}
 			if jsonStr != "" {
 				slog.Debug(fmt.Sprintf("[%s] Parsing JSON retrieved from temporal file", reqId))
-				liveTiming, err = leaderboard_parser.ReadJson(jsonStr)
+				liveTiming, err = acsm_parser.ReadLeaderBoardJson(jsonStr)
 				if err != nil {
 					slog.Error(fmt.Sprintf("[%s] Cannot parse leaderboard json value %q: %v", reqId, jsonPath, err))
 					end <- LiveTimingResult{
@@ -165,8 +165,8 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 		}
 
 		slog.Debug(fmt.Sprintf("[%s] Extracting hotlaps", reqId))
-		result, bestSectors := leaderboard_parser.ExtractHotlaps(append(liveTiming.ConnectedDrivers, liveTiming.DisconnectedDrivers...))
-		result = leaderboard_parser.SortAndCalculateData(result, &data.PreviewPattern, bestSectors)
+		result, bestSectors := acsm_parser.ExtractHotlaps(append(liveTiming.ConnectedDrivers, liveTiming.DisconnectedDrivers...))
+		result = acsm_parser.SortHotlapsAndCalculateData(result, &data.PreviewPattern, bestSectors)
 
 		if downloaded && jsonStr != "" {
 			slog.Debug(fmt.Sprintf("[%s] Saving leaderboard json to temp folder %q", reqId, jsonPath))

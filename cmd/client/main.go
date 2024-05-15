@@ -1,9 +1,9 @@
 package main
 
 import (
-	downloader "acsm-live_timing-parser/pkg/downloader"
+	"acsm-live_timing-parser/pkg/acsm_parser"
+	"acsm-live_timing-parser/pkg/downloader"
 	"acsm-live_timing-parser/pkg/helpers"
-	"acsm-live_timing-parser/pkg/leaderboard_parser"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -45,8 +45,8 @@ func parseArgs() {
 }
 
 func callApi(tmpPath string) (string, error) {
-	downloader := downloader.NewDownloader(Opts.chromeDriverPath, Opts.seleniumPath, Opts.user, Opts.pass, Opts.url, Opts.serverNo, Opts.debug)
-	jsonStr, err := downloader.Download()
+	downloadHandler := downloader.NewDownloader(Opts.chromeDriverPath, Opts.seleniumPath, Opts.user, Opts.pass, Opts.url, Opts.serverNo, Opts.debug)
+	jsonStr, err := downloadHandler.Download(downloader.LiveTimingApiEndpoint, nil)
 	if err != nil {
 		return "", err
 	}
@@ -91,14 +91,14 @@ func main() {
 		}
 	}
 
-	liveTiming, err := leaderboard_parser.ReadJson(jsonStr)
+	liveTiming, err := acsm_parser.ReadLeaderBoardJson(jsonStr)
 	if err != nil {
 		fmt.Printf("cannot parse API json value: %v\n", err)
 		os.Exit(1)
 	}
 
-	result, bestSplits := leaderboard_parser.ExtractHotlaps(append(liveTiming.ConnectedDrivers, liveTiming.DisconnectedDrivers...))
-	result = leaderboard_parser.SortAndCalculateData(result, &Opts.skinPreviewPattern, bestSplits)
+	result, bestSplits := acsm_parser.ExtractHotlaps(append(liveTiming.ConnectedDrivers, liveTiming.DisconnectedDrivers...))
+	result = acsm_parser.SortHotlapsAndCalculateData(result, &Opts.skinPreviewPattern, bestSplits)
 
 	resultBytes, err := json.MarshalIndent(result, "", "\t")
 	if err != nil {

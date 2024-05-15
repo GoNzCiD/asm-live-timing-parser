@@ -1,4 +1,4 @@
-package leaderboard_parser
+package acsm_parser
 
 import (
 	"acsm-live_timing-parser/pkg/helpers"
@@ -8,20 +8,15 @@ import (
 	"time"
 )
 
-func ReadJson(jsonStr string) (*helpers.LeaderBoard, error) {
+func ReadLeaderBoardJson(jsonStr string) (*helpers.LeaderBoard, error) {
 	result := helpers.LeaderBoard{}
 	err := json.Unmarshal([]byte(jsonStr), &result)
 	return &result, err
 }
 
 func ExtractHotlaps(drivers []helpers.LiveTimingDriver) ([]helpers.Hotlap, helpers.Splits) {
-	var bestSectors []time.Duration
-	bestSectors[0] = math.MaxInt64
-	bestSectors[1] = math.MaxInt64
-	bestSectors[2] = math.MaxInt64
-
+	bestSectors := []time.Duration{math.MaxInt64, math.MaxInt64, math.MaxInt64}
 	var result []helpers.Hotlap
-
 	for _, driver := range drivers {
 		for _, car := range driver.Cars {
 			lap := helpers.Hotlap{
@@ -64,7 +59,7 @@ func ExtractHotlaps(drivers []helpers.LiveTimingDriver) ([]helpers.Hotlap, helpe
 	}
 }
 
-func SortAndCalculateData(hotlaps []helpers.Hotlap, skinPreviewPattern *string, bestSectors helpers.Splits) []helpers.Hotlap {
+func SortHotlapsAndCalculateData(hotlaps []helpers.Hotlap, skinPreviewPattern *string, bestSectors helpers.Splits) []helpers.Hotlap {
 	sort.Slice(hotlaps, func(i, j int) bool {
 		if hotlaps[i].LapTime == 0 {
 			return false

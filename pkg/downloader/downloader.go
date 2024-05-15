@@ -11,6 +11,11 @@ import (
 	"github.com/tebeka/selenium/chrome"
 )
 
+const (
+	LiveTimingApiEndpoint  = "api/live-timings/leaderboard.json"
+	ResultsListApiEndpoint = "api/results/list.json"
+)
+
 type Downloader struct {
 	chromeDriverPath string
 	seleniumUrl      string
@@ -33,7 +38,7 @@ func NewDownloader(chromeDriverPath string, seleniumUrl string, user string, pas
 	}
 }
 
-func (d *Downloader) Download() (string, error) {
+func (d *Downloader) Download(path string, extraParams map[string]string) (string, error) {
 	// Using a fixed selenium docker image/version because of the JSON & W3C capability
 	// https://stackoverflow.com/questions/76574419/golang-docker-selenium-chrome
 	// selenium/standalone-chrome:4.8.3
@@ -120,7 +125,11 @@ func (d *Downloader) Download() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("error parsing the url: %v", err)
 	}
-	u.Path = "api/live-timings/leaderboard.json"
+	u.Path = path
+	for k, v := range extraParams {
+		q.Add(k, v)
+	}
+	u.RawQuery = q.Encode()
 
 	// get the leaderboard.json URL
 	err = driver.Get(u.String())
