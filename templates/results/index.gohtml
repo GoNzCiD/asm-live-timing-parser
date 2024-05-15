@@ -2,7 +2,30 @@
 
 {{define "title"}}{{.Title}}{{end}}
 
-{{define "imports"}}{{end}}
+{{define "imports"}}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="/js/results.js"></script>
+{{end}}
 
 {{define "content"}}
+    <table class="table">
+      <thead>
+        <tr>          
+          <th scope="col">Track</th>
+          <th scope="col">Type</th>
+          <th scope="col">Date</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range .Results }}
+        <tr>                      
+          <td>{{ .Track }}</td>
+          <td>{{ .Type }}</td>
+          <td>{{ .Date }}</td>
+          <td><input class="btn btn-outline-primary btn-results" type="button" value="Results"></td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
 {{end}}
