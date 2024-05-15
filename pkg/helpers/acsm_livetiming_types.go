@@ -87,7 +87,7 @@ type Car struct {
 	BestLapMiniSectors   []MiniSector `json:"BestLapMiniSectors"`
 }
 
-type Driver struct {
+type LiveTimingDriver struct {
 	CarInfo             CarInfo        `json:"CarInfo"`
 	TotalNumLaps        int            `json:"TotalNumLaps"`
 	ConnectedTime       time.Time      `json:"ConnectedTime"`
@@ -113,24 +113,24 @@ type Driver struct {
 }
 
 type LeaderBoard struct {
-	Version             int      `json:"Version"`
-	SessionIndex        int      `json:"SessionIndex"`
-	CurrentSessionIndex int      `json:"CurrentSessionIndex"`
-	SessionCount        int      `json:"SessionCount"`
-	ServerName          string   `json:"ServerName"`
-	Track               string   `json:"Track"`
-	TrackConfig         string   `json:"TrackConfig"`
-	Name                string   `json:"Name"`
-	Type                int      `json:"Type"`
-	Time                int      `json:"Time"`
-	Laps                int      `json:"Laps"`
-	WaitTime            int      `json:"WaitTime"`
-	AmbientTemp         int      `json:"AmbientTemp"`
-	RoadTemp            int      `json:"RoadTemp"`
-	WeatherGraphics     string   `json:"WeatherGraphics"`
-	ElapsedMilliseconds int      `json:"ElapsedMilliseconds"`
-	VisibilityMode      int      `json:"VisibilityMode"`
-	EventType           int      `json:"EventType"`
-	ConnectedDrivers    []Driver `json:"ConnectedDrivers"`
-	DisconnectedDrivers []Driver `json:"DisconnectedDrivers"`
+	Version             int                `json:"Version"`
+	SessionIndex        int                `json:"SessionIndex"`
+	CurrentSessionIndex int                `json:"CurrentSessionIndex"`
+	SessionCount        int                `json:"SessionCount"`
+	ServerName          string             `json:"ServerName"`
+	Track               string             `json:"Track"`
+	TrackConfig         string             `json:"TrackConfig"`
+	Name                string             `json:"Name"`
+	Type                int                `json:"Type"`
+	Time                int                `json:"Time"`
+	Laps                int                `json:"Laps"`
+	WaitTime            int                `json:"WaitTime"`
+	AmbientTemp         int                `json:"AmbientTemp"`
+	RoadTemp            int                `json:"RoadTemp"`
+	WeatherGraphics     string             `json:"WeatherGraphics"`
+	ElapsedMilliseconds int                `json:"ElapsedMilliseconds"`
+	VisibilityMode      int                `json:"VisibilityMode"`
+	EventType           int                `json:"EventType"`
+	ConnectedDrivers    []LiveTimingDriver `json:"ConnectedDrivers"`
+	DisconnectedDrivers []LiveTimingDriver `json:"DisconnectedDrivers"`
 }

@@ -14,7 +14,7 @@ func ReadJson(jsonStr string) (*helpers.LeaderBoard, error) {
 	return &result, err
 }
 
-func ExtractHotlaps(drivers []helpers.Driver) ([]helpers.Hotlap, helpers.Splits) {
+func ExtractHotlaps(drivers []helpers.LiveTimingDriver) ([]helpers.Hotlap, helpers.Splits) {
 	var bestSectors []time.Duration
 	bestSectors[0] = math.MaxInt64
 	bestSectors[1] = math.MaxInt64
