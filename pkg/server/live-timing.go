@@ -165,9 +165,8 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 		}
 
 		slog.Debug(fmt.Sprintf("[%s] Extracting hotlaps", reqId))
-		result := leaderboard_parser.ExtractHotlaps(liveTiming.ConnectedDrivers)
-		result = append(result, leaderboard_parser.ExtractHotlaps(liveTiming.DisconnectedDrivers)...)
-		result = leaderboard_parser.SortAndCalculateData(result, &data.PreviewPattern)
+		result, bestSectors := leaderboard_parser.ExtractHotlaps(append(liveTiming.ConnectedDrivers, liveTiming.DisconnectedDrivers...))
+		result = leaderboard_parser.SortAndCalculateData(result, &data.PreviewPattern, bestSectors)
 
 		if downloaded && jsonStr != "" {
 			slog.Debug(fmt.Sprintf("[%s] Saving leaderboard json to temp folder %q", reqId, jsonPath))

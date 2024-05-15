@@ -97,9 +97,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	result := leaderboard_parser.ExtractHotlaps(liveTiming.ConnectedDrivers)
-	result = append(result, leaderboard_parser.ExtractHotlaps(liveTiming.DisconnectedDrivers)...)
-	result = leaderboard_parser.SortAndCalculateData(result, &Opts.skinPreviewPattern)
+	result, bestSplits := leaderboard_parser.ExtractHotlaps(append(liveTiming.ConnectedDrivers, liveTiming.DisconnectedDrivers...))
+	result = leaderboard_parser.SortAndCalculateData(result, &Opts.skinPreviewPattern, bestSplits)
 
 	resultBytes, err := json.MarshalIndent(result, "", "\t")
 	if err != nil {
