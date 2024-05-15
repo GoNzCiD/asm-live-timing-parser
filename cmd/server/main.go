@@ -1,8 +1,8 @@
 package main
 
 import (
+	"acsm-live_timing-parser/internal/server"
 	"acsm-live_timing-parser/pkg/config"
-	"acsm-live_timing-parser/pkg/server"
 	"flag"
 	"fmt"
 	"log/slog"
