@@ -64,7 +64,7 @@ func main() {
 		defer f.Close()
 	}
 
-	s := server.NewServer(httpLog, Cfg.Address, &Cfg.ScrapeConfig)
+	s := server.NewServer(httpLog, Cfg.Address, Opts.UrlPrefix, &Cfg.ScrapeConfig)
 	slog.Debug("Initializing server")
 	err = s.InitializeAndStart()
 	if err != nil {
