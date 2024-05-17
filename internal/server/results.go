@@ -24,7 +24,6 @@ type ResultsListData struct {
 }
 
 func extractRPPattern(jsonPath string) string {
-	//jsonPath = "results/download/2024_5_9_19_48_RACE.json"
 	a := strings.Split(jsonPath, "/")
 	a = strings.Split(a[len(a)-1], "_")
 
@@ -54,7 +53,8 @@ func (s *Server) ResultsIndex(w http.ResponseWriter, r *http.Request) {
 		ServerNo int
 		Results  []ResultsListData
 	}{
-		Title:    "Results list",
+		Title: "Results list",
+		//TODO: read the server from a parameter in case the ACSM has more than one and allow to choose. [WiP]
 		ServerNo: 2,
 	}
 

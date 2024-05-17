@@ -59,7 +59,7 @@ func ExtractHotlaps(drivers []helpers.LiveTimingDriver) ([]helpers.Hotlap, helpe
 	}
 }
 
-func SortHotlapsAndCalculateData(hotlaps []helpers.Hotlap, skinPreviewPattern *string, bestSectors helpers.Splits) []helpers.Hotlap {
+func SortHotlapsAndCalculateData(hotlaps []helpers.Hotlap, skinPreviewPattern *string, bestSectors helpers.Splits, ballast map[string]int) []helpers.Hotlap {
 	sort.Slice(hotlaps, func(i, j int) bool {
 		if hotlaps[i].LapTime == 0 {
 			return false
@@ -81,6 +81,8 @@ func SortHotlapsAndCalculateData(hotlaps []helpers.Hotlap, skinPreviewPattern *s
 			hotlaps[i].Sectors.S1.IsBest = hotlaps[i].Sectors.S1.SplitTime == bestSectors.S1.SplitTime
 			hotlaps[i].Sectors.S2.IsBest = hotlaps[i].Sectors.S2.SplitTime == bestSectors.S2.SplitTime
 			hotlaps[i].Sectors.S3.IsBest = hotlaps[i].Sectors.S3.SplitTime == bestSectors.S3.SplitTime
+
+			hotlaps[i].Ballast = ballast[hotlaps[i].PlayerId]
 		}
 	}
 

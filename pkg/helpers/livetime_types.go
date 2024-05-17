@@ -20,6 +20,7 @@ type Hotlap struct {
 	Tyre               string
 	Sectors            Splits
 	SkinPreviewPattern *string
+	Ballast            int
 }
 
 type hotlapMarshall struct {
@@ -44,6 +45,7 @@ type hotlapMarshall struct {
 	Sector3Best         bool   `json:"sector3_best"`
 	Sector3BestAbsolute bool   `json:"sector3_best_absolute"`
 	SkinPreviewPath     string `json:"skin_preview"`
+	Ballast             string `json:"ballast"`
 }
 
 func (h *Hotlap) MarshalJSON() ([]byte, error) {
@@ -72,6 +74,10 @@ func (h *Hotlap) MarshalJSON() ([]byte, error) {
 
 	if h.SkinPreviewPattern != nil {
 		result.SkinPreviewPath = fmt.Sprintf(*h.SkinPreviewPattern, h.PlayerId)
+	}
+
+	if h.Ballast > 0 {
+		result.Ballast = fmt.Sprintf("%d Kg", h.Ballast)
 	}
 
 	return json.Marshal(&result)

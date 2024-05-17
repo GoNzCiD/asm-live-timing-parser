@@ -97,8 +97,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	ballastPath, err := helpers.GetFullPath(helpers.TmpBallastFileName)
+	if err != nil {
+		fmt.Printf("cannot retrieve full path for ballast json file: %v\n", err)
+	}
+	ballast, err := acsm_parser.ReadAndParseBallast(ballastPath)
+	if err != nil {
+		fmt.Printf("cannot retrieve ballast from %q: %v\n", ballastPath, err)
+	}
+
 	result, bestSplits := acsm_parser.ExtractHotlaps(append(liveTiming.ConnectedDrivers, liveTiming.DisconnectedDrivers...))
-	result = acsm_parser.SortHotlapsAndCalculateData(result, &Opts.skinPreviewPattern, bestSplits)
+	result = acsm_parser.SortHotlapsAndCalculateData(result, &Opts.skinPreviewPattern, bestSplits, ballast)
 
 	resultBytes, err := json.MarshalIndent(result, "", "\t")
 	if err != nil {

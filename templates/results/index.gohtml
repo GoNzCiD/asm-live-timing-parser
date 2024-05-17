@@ -1,6 +1,6 @@
 {{template "base" .}}
 
-{{define "title"}}{{.Title}}{{end}}
+{{define "title"}}{{ .Title }}{{end}}
 
 {{define "imports"}}
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -23,7 +23,11 @@
           <td>{{ .Track }}</td>
           <td>{{ .Type }}</td>
           <td>{{ .Date }}</td>
-          <td><input class="btn btn-outline-primary btn-results" type="button" value="Results"></td>
+          <td>
+            <a class="btn btn-outline-primary" href="/result{{ .DownloadLink }}?server={{ $.ServerNo }}" target="_blank" role="button">Results</a>
+            <a class="btn btn-outline-warning" href="/rp-logs?server={{ $.ServerNo }}&pattern={{ .RPPattern }}" target="_blank" role="button">RP Logs</a>
+            <input class="btn btn-outline-success btn-ballast" type="button" value="Set Ballast" server="{{ $.ServerNo }}" results="{{ .DownloadLink }}">
+          </td>
         </tr>
         {{ end }}
       </tbody>

@@ -170,9 +170,16 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		slog.Debug(fmt.Sprintf("[%s] Reading ballast", reqId))
+		ballastPath := path.Join(s.ScrapeConfig.WorkingPath, fmt.Sprintf("%d_%s", data.Server, helpers.TmpBallastFileName))
+		ballast, err := acsm_parser.ReadAndParseBallast(ballastPath)
+		if err != nil {
+			slog.Error(fmt.Sprintf("[%s] Cannot retrieve ballast from %q: %v", reqId, ballastPath, err))
+		}
+
 		slog.Debug(fmt.Sprintf("[%s] Extracting hotlaps", reqId))
 		result, bestSectors := acsm_parser.ExtractHotlaps(append(liveTiming.ConnectedDrivers, liveTiming.DisconnectedDrivers...))
-		result = acsm_parser.SortHotlapsAndCalculateData(result, &data.PreviewPattern, bestSectors)
+		result = acsm_parser.SortHotlapsAndCalculateData(result, &data.PreviewPattern, bestSectors, ballast)
 
 		if downloaded && jsonStr != "" {
 			slog.Debug(fmt.Sprintf("[%s] Saving leaderboard json to temp folder %q", reqId, jsonPath))
