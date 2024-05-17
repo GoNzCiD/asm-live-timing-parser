@@ -21,16 +21,18 @@ type Server struct {
 	address          string
 	urlPrefix        string
 	ScrapeConfig     *config.ScrapeConfig
+	ResultsConfig    *config.ResultsConfig
 	templatesManager *templating.TemplateManager
 }
 
-func NewServer(httpLog *os.File, address string, urlPrefix string, scrapeConfig *config.ScrapeConfig) *Server {
+func NewServer(httpLog *os.File, address string, urlPrefix string, scrapeConfig *config.ScrapeConfig, resultsConfig *config.ResultsConfig) *Server {
 	return &Server{
-		router:       chi.NewRouter(),
-		httpLog:      httpLog,
-		address:      address,
-		urlPrefix:    urlPrefix,
-		ScrapeConfig: scrapeConfig,
+		router:        chi.NewRouter(),
+		httpLog:       httpLog,
+		address:       address,
+		urlPrefix:     urlPrefix,
+		ScrapeConfig:  scrapeConfig,
+		ResultsConfig: resultsConfig,
 	}
 }
 
@@ -50,6 +52,7 @@ func (s *Server) InitializeAndStart() error {
 
 	// Web
 	r.Get(s.urlPrefix+"/results", s.ResultsIndex)
+	r.Get(s.urlPrefix+"/result/*", s.Results)
 
 	// Assets (static files)
 	fs := http.FileServer(http.Dir("assets/"))

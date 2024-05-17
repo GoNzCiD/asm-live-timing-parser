@@ -6,13 +6,18 @@ import (
 	"github.com/hydronica/toml"
 )
 
+const (
+	DefaultConfigFile = "config.toml"
+)
+
 type ServerConfig struct {
 	Timeout          time.Duration `toml:"timeout"`
 	AllowedClientIPs []string      `toml:"allowed_client_ip_ranges"`
 	LogPath          string        `toml:"log_path"`
 	HttpLogPath      string        `toml:"http_log_path"`
 	Address          string        `toml:"address"`
-	ScrapeConfig     ScrapeConfig  `toml:"scrape"`
+	Scrape           ScrapeConfig  `toml:"scrape"`
+	Results          ResultsConfig `toml:"results"`
 }
 
 type ScrapeConfig struct {
@@ -25,9 +30,9 @@ type ScrapeConfig struct {
 	LeaderBoardJsonTtl time.Duration `toml:"leaderboard_json_ttl"`
 }
 
-const (
-	DefaultConfigFile = "config.toml"
-)
+type ResultsConfig struct {
+	Points []int `toml:"points"`
+}
 
 func LoadConfig(cfg *ServerConfig, fileName string) error {
 	_, err := toml.DecodeFile(fileName, cfg)

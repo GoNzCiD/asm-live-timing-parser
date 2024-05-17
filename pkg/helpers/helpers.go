@@ -2,10 +2,13 @@ package helpers
 
 import (
 	"bytes"
+	"fmt"
+	"math"
 	"os"
 	"path"
 	"path/filepath"
 	"runtime/debug"
+	"time"
 )
 
 func SaveToFile(content string, filepath string) error {
@@ -47,6 +50,14 @@ func GetFullPath(relPath string) (string, error) {
 		}
 		return absPath, nil
 	}
+}
+
+// Converts duration to minutes and seconds with milliseconds mm:ss.sss
+func ConvertTimeToHuman(totalTime time.Duration) string {
+	lapTimeTotalMinutes := int(math.Trunc(totalTime.Minutes()))
+	lapTimeTotalSeconds := totalTime.Seconds()
+	lapTimeSeconds := lapTimeTotalSeconds - (float64(lapTimeTotalMinutes) * 60)
+	return fmt.Sprintf("%d:%06.3f", lapTimeTotalMinutes, lapTimeSeconds)
 }
 
 // StackTraceAsList returns the stack trace of the calling goroutine

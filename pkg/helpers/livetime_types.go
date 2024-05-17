@@ -3,7 +3,6 @@ package helpers
 import (
 	"encoding/json"
 	"fmt"
-	"math"
 	"time"
 )
 
@@ -48,16 +47,12 @@ type hotlapMarshall struct {
 }
 
 func (h *Hotlap) MarshalJSON() ([]byte, error) {
-	lapTimeTotalMinutes := int(math.Trunc(h.LapTime.Minutes()))
-	lapTimeTotalSeconds := h.LapTime.Seconds()
-	lapTimeSeconds := lapTimeTotalSeconds - (float64(lapTimeTotalMinutes) * 60)
-	lapTimeStr := fmt.Sprintf("%d:%06.3f", lapTimeTotalMinutes, lapTimeSeconds)
 	result := &hotlapMarshall{
 		Car:                 h.Car,
 		CarId:               h.CarId,
 		Gap:                 fmt.Sprintf("%.3f", h.Gap.Seconds()),
 		Laps:                h.Laps,
-		LapTime:             lapTimeStr,
+		LapTime:             ConvertTimeToHuman(h.LapTime),
 		Max_speed:           fmt.Sprintf("%.1f Km/h", h.Max_speed),
 		Name:                h.Name,
 		NumLaps:             h.NumLaps,

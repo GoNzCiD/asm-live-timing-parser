@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/middleware"
@@ -28,10 +31,12 @@ func (s *Server) ResultsIndex(w http.ResponseWriter, r *http.Request) {
 	slog.Info(fmt.Sprintf("[%s] :: Web: /results", reqId))
 
 	data := struct {
-		Title   string
-		Results []ResultsListData
+		Title    string
+		ServerNo int
+		Results  []ResultsListData
 	}{
-		Title: "Results list",
+		Title:    "Results list",
+		ServerNo: 2,
 	}
 
 	downloadHandler := downloader.NewDownloader(
@@ -40,7 +45,7 @@ func (s *Server) ResultsIndex(w http.ResponseWriter, r *http.Request) {
 		s.ScrapeConfig.User,
 		s.ScrapeConfig.Password,
 		s.ScrapeConfig.ACSMDomain,
-		2,
+		data.ServerNo,
 		false)
 	jsonStr, err := downloadHandler.Download(downloader.ResultsListApiEndpoint, map[string]string{"q": "Type:\"RACE\""})
 	if err != nil {
@@ -68,5 +73,58 @@ func (s *Server) ResultsIndex(w http.ResponseWriter, r *http.Request) {
 	err = t.Execute(w, data)
 	if err != nil {
 		slog.Error(fmt.Sprintf("[%s] Error rendering template: %v", reqId, err))
+	}
+}
+
+func (s *Server) Results(w http.ResponseWriter, r *http.Request) {
+	defer s.Http500IfPanic(r, w)
+	defer r.Body.Close()
+
+	reqId := middleware.GetReqID(r.Context())
+
+	slog.Info(fmt.Sprintf("[%s] :: Web: /result", reqId))
+
+	resultPath := r.URL.Path[7:]
+	serverStr := r.URL.Query().Get("server")
+
+	slog.Info(fmt.Sprintf("[%s] :: Web: /result {\"path\": %q, \"server\": %q}", reqId, resultPath, serverStr))
+
+	server, err := strconv.Atoi(serverStr)
+	if err != nil {
+		slog.Warn(fmt.Sprintf("[%s] Cannot parse the server parameter: %v", reqId, err))
+		server = 0
+	}
+
+	downloadHandler := downloader.NewDownloader(
+		s.ScrapeConfig.ChromeDriverPath,
+		s.ScrapeConfig.SeleniumUrl,
+		s.ScrapeConfig.User,
+		s.ScrapeConfig.Password,
+		s.ScrapeConfig.ACSMDomain,
+		server,
+		false)
+	jsonStr, err := downloadHandler.Download(resultPath, nil)
+	if err != nil {
+		slog.Error(fmt.Sprintf("[%s] Error retrieving results: %v", reqId, err))
+	}
+
+	results, err := acsm_parser.GetResults(jsonStr)
+	if err != nil {
+		slog.Error(fmt.Sprintf("[%s] Error parsing results: %v", reqId, err))
+	}
+
+	name := filepath.Base(resultPath)
+	name = strings.Split(name, ".")[0]
+
+	file, err := acsm_parser.GenerateResultsExcel(results, name, s.ResultsConfig.Points)
+	if err != nil {
+		slog.Error(fmt.Sprintf("[%s] Error generating excel results: %v", reqId, err))
+	}
+
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%q", name+".xlsx"))
+	err = file.Write(w)
+	if err != nil {
+		slog.Error(fmt.Sprintf("[%s] Error exporting excel: %v", reqId, err))
 	}
 }

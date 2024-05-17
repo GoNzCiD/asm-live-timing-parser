@@ -13,6 +13,51 @@ type ACSMResultsDriver struct {
 	ClassID   string   `json:"ClassID"`
 }
 
+type ACSMResult struct {
+	BallastKG    int    `json:"BallastKG"`
+	BestLap      int    `json:"BestLap"`
+	CarID        int    `json:"CarId"`
+	CarModel     string `json:"CarModel"`
+	DriverGUID   string `json:"DriverGuid"`
+	DriverName   string `json:"DriverName"`
+	Restrictor   int    `json:"Restrictor"`
+	TotalTime    int    `json:"TotalTime"`
+	NumLaps      int    `json:"NumLaps"`
+	HasPenalty   bool   `json:"HasPenalty"`
+	PenaltyTime  int    `json:"PenaltyTime"`
+	LapPenalty   int    `json:"LapPenalty"`
+	Disqualified bool   `json:"Disqualified"`
+	ClassID      string `json:"ClassID"`
+	GridPosition int    `json:"GridPosition"`
+}
+
+type ACSMLap struct {
+	BallastKG               int         `json:"BallastKG"`
+	CarID                   int         `json:"CarId"`
+	CarModel                string      `json:"CarModel"`
+	Cuts                    int         `json:"Cuts"`
+	DriverGUID              string      `json:"DriverGuid"`
+	DriverName              string      `json:"DriverName"`
+	LapTime                 int         `json:"LapTime"`
+	Restrictor              int         `json:"Restrictor"`
+	Sectors                 []int       `json:"Sectors"`
+	Timestamp               int         `json:"Timestamp"`
+	Tyre                    string      `json:"Tyre"`
+	ClassID                 string      `json:"ClassID"`
+	ContributedToFastestLap bool        `json:"ContributedToFastestLap"`
+	SpeedTrapHits           interface{} `json:"SpeedTrapHits"`
+	Conditions              struct {
+		Ambient       float64 `json:"Ambient"`
+		Road          float64 `json:"Road"`
+		Grip          int     `json:"Grip"`
+		WindSpeed     float64 `json:"WindSpeed"`
+		WindDirection float64 `json:"WindDirection"`
+		RainIntensity int     `json:"RainIntensity"`
+		RainWetness   int     `json:"RainWetness"`
+		RainWater     int     `json:"RainWater"`
+	} `json:"Conditions"`
+}
+
 type ACSMResults struct {
 	Version int `json:"Version"`
 	Cars    []struct {
@@ -38,55 +83,14 @@ type ACSMResults struct {
 		Timestamp       int               `json:"Timestamp"`
 		AfterSessionEnd bool              `json:"AfterSessionEnd"`
 	} `json:"Events"`
-	Laps []struct {
-		BallastKG               int         `json:"BallastKG"`
-		CarID                   int         `json:"CarId"`
-		CarModel                string      `json:"CarModel"`
-		Cuts                    int         `json:"Cuts"`
-		DriverGUID              string      `json:"DriverGuid"`
-		DriverName              string      `json:"DriverName"`
-		LapTime                 int         `json:"LapTime"`
-		Restrictor              int         `json:"Restrictor"`
-		Sectors                 []int       `json:"Sectors"`
-		Timestamp               int         `json:"Timestamp"`
-		Tyre                    string      `json:"Tyre"`
-		ClassID                 string      `json:"ClassID"`
-		ContributedToFastestLap bool        `json:"ContributedToFastestLap"`
-		SpeedTrapHits           interface{} `json:"SpeedTrapHits"`
-		Conditions              struct {
-			Ambient       float64 `json:"Ambient"`
-			Road          float64 `json:"Road"`
-			Grip          int     `json:"Grip"`
-			WindSpeed     float64 `json:"WindSpeed"`
-			WindDirection float64 `json:"WindDirection"`
-			RainIntensity int     `json:"RainIntensity"`
-			RainWetness   int     `json:"RainWetness"`
-			RainWater     int     `json:"RainWater"`
-		} `json:"Conditions"`
-	} `json:"Laps"`
-	Result []struct {
-		BallastKG    int    `json:"BallastKG"`
-		BestLap      int    `json:"BestLap"`
-		CarID        int    `json:"CarId"`
-		CarModel     string `json:"CarModel"`
-		DriverGUID   string `json:"DriverGuid"`
-		DriverName   string `json:"DriverName"`
-		Restrictor   int    `json:"Restrictor"`
-		TotalTime    int    `json:"TotalTime"`
-		NumLaps      int    `json:"NumLaps"`
-		HasPenalty   bool   `json:"HasPenalty"`
-		PenaltyTime  int    `json:"PenaltyTime"`
-		LapPenalty   int    `json:"LapPenalty"`
-		Disqualified bool   `json:"Disqualified"`
-		ClassID      string `json:"ClassID"`
-		GridPosition int    `json:"GridPosition"`
-	} `json:"Result"`
-	Penalties     interface{} `json:"Penalties"`
-	TrackConfig   string      `json:"TrackConfig"`
-	TrackName     string      `json:"TrackName"`
-	Type          string      `json:"Type"`
-	Date          time.Time   `json:"Date"`
-	SessionFile   string      `json:"SessionFile"`
+	Laps          []ACSMLap    `json:"Laps"`
+	Result        []ACSMResult `json:"Result"`
+	Penalties     interface{}  `json:"Penalties"`
+	TrackConfig   string       `json:"TrackConfig"`
+	TrackName     string       `json:"TrackName"`
+	Type          string       `json:"Type"`
+	Date          time.Time    `json:"Date"`
+	SessionFile   string       `json:"SessionFile"`
 	SessionConfig struct {
 		SessionType                     int    `json:"session_type"`
 		Name                            string `json:"name"`
