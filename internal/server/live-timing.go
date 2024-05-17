@@ -102,6 +102,7 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 						HTTPStatusCode: 500,
 						Error:          dErr.Error(),
 					}
+					return
 				}
 			}
 
@@ -112,6 +113,7 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 					HTTPStatusCode: 429,
 					Error:          "Too Many Request",
 				}
+				return
 			}
 
 			slog.Debug(fmt.Sprintf("[%s] Parsing JSON retrieved from API", reqId))
@@ -123,6 +125,7 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 					HTTPStatusCode: 500,
 					Error:          err.Error(),
 				}
+				return
 			}
 
 			if liveTiming.Name == data.Name {
@@ -142,6 +145,7 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 					HTTPStatusCode: 500,
 					Error:          err.Error(),
 				}
+				return
 			}
 			if jsonStr != "" {
 				slog.Debug(fmt.Sprintf("[%s] Parsing JSON retrieved from temporal file", reqId))
@@ -153,6 +157,7 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 						HTTPStatusCode: 500,
 						Error:          err.Error(),
 					}
+					return
 				}
 			}
 		}
@@ -162,6 +167,7 @@ func (s *Server) Scan(w http.ResponseWriter, r *http.Request) {
 				Success:        false,
 				HTTPStatusCode: 404,
 			}
+			return
 		}
 
 		slog.Debug(fmt.Sprintf("[%s] Extracting hotlaps", reqId))
