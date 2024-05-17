@@ -20,6 +20,25 @@ type ResultsListData struct {
 	Type         string
 	Date         time.Time
 	DownloadLink string
+	RPPattern    string
+}
+
+func extractRPPattern(jsonPath string) string {
+	//jsonPath = "results/download/2024_5_9_19_48_RACE.json"
+	a := strings.Split(jsonPath, "/")
+	a = strings.Split(a[len(a)-1], "_")
+
+	year := a[0]
+	month := a[1]
+	if len(month) == 1 {
+		month = "0" + month
+	}
+	day := a[2]
+	if len(day) == 1 {
+		day = "0" + day
+	}
+
+	return fmt.Sprintf("race_penalty_%s%s%s_*.log", year, month, day)
 }
 
 func (s *Server) ResultsIndex(w http.ResponseWriter, r *http.Request) {
@@ -63,6 +82,7 @@ func (s *Server) ResultsIndex(w http.ResponseWriter, r *http.Request) {
 			Type:         r.SessionType,
 			Date:         r.Date,
 			DownloadLink: r.ResultsJSONURL,
+			RPPattern:    extractRPPattern(r.ResultsJSONURL),
 		})
 	}
 
@@ -81,8 +101,6 @@ func (s *Server) Results(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	reqId := middleware.GetReqID(r.Context())
-
-	slog.Info(fmt.Sprintf("[%s] :: Web: /result", reqId))
 
 	resultPath := r.URL.Path[7:]
 	serverStr := r.URL.Query().Get("server")
@@ -116,7 +134,7 @@ func (s *Server) Results(w http.ResponseWriter, r *http.Request) {
 	name := filepath.Base(resultPath)
 	name = strings.Split(name, ".")[0]
 
-	file, err := acsm_parser.GenerateResultsExcel(results, name, s.ResultsConfig.Points)
+	file, err := acsm_parser.GenerateResultsExcel(results, name, s.RaceConfig.Points)
 	if err != nil {
 		slog.Error(fmt.Sprintf("[%s] Error generating excel results: %v", reqId, err))
 	}

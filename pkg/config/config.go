@@ -17,7 +17,7 @@ type ServerConfig struct {
 	HttpLogPath      string        `toml:"http_log_path"`
 	Address          string        `toml:"address"`
 	Scrape           ScrapeConfig  `toml:"scrape"`
-	Results          ResultsConfig `toml:"results"`
+	Race             RaceConfig    `toml:"race"`
 }
 
 type ScrapeConfig struct {
@@ -30,8 +30,10 @@ type ScrapeConfig struct {
 	LeaderBoardJsonTtl time.Duration `toml:"leaderboard_json_ttl"`
 }
 
-type ResultsConfig struct {
-	Points []int `toml:"points"`
+type RaceConfig struct {
+	Points     []int  `toml:"points"`
+	Ballast    []int  `toml:"ballast"`
+	RPLogsPath string `toml:"rp_logs_path"`
 }
 
 func LoadConfig(cfg *ServerConfig, fileName string) error {
