@@ -3,6 +3,7 @@ package server
 import (
 	"acsm-live_timing-parser/pkg/acsm_parser"
 	"acsm-live_timing-parser/pkg/helpers"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -52,6 +53,7 @@ func (s *Server) SetGeneralBallast(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// download classification list
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	resp, err := http.Get(s.RaceConfig.ClassificationIdsUrl)
 	if err != nil {
 		slog.Error(fmt.Sprintf("[%s] Cannot download the classification URL (%q): %v", reqId, s.RaceConfig.ClassificationIdsUrl, err))
