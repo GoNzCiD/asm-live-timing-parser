@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -94,4 +95,10 @@ func FindInFolder(root, pattern string) ([]string, error) {
 		return nil, err
 	}
 	return matches, nil
+}
+
+func CheckFileExists(filePath string) bool {
+	_, error := os.Stat(filePath)
+	//return !os.IsNotExist(err)
+	return !errors.Is(error, os.ErrNotExist)
 }

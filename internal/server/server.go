@@ -55,6 +55,8 @@ func (s *Server) InitializeAndStart() error {
 	r.Get(s.urlPrefix+"/result/*", s.Results)
 	r.Get(s.urlPrefix+"/rp-logs", s.RpLogs)
 	r.Post(s.urlPrefix+"/set-ballast", s.SetBallast)
+	r.Post(s.urlPrefix+"/set-general-ballast", s.SetGeneralBallast)
+	r.Post(s.urlPrefix+"/clear-ballast", s.ClearBallast)
 
 	// Index redirect to results
 	r.Get(s.urlPrefix+"/", func(w http.ResponseWriter, r *http.Request) {

@@ -12,6 +12,12 @@
   </head>
   <body>
     <div class="container my-5">
+      <nav class="navbar bg-body-tertiary">
+        <form class="container-fluid justify-content-start">
+          <input class="btn btn-outline-success btn-set-general-ballast me-2" type="button" value="Set General Ballast" server="{{ $.ServerNo }}">
+          <input class="btn btn-outline-danger btn-clear-ballast me-2" type="button" value="Clear Ballast" server="{{ $.ServerNo }}">
+        </form>
+      </nav>
       {{template "content" .}}
     </div>
     <div id="loadingoverlay"> 

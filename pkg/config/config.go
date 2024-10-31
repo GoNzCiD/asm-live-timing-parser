@@ -31,9 +31,10 @@ type ScrapeConfig struct {
 }
 
 type RaceConfig struct {
-	Points     []int  `toml:"points"`
-	Ballast    []int  `toml:"ballast"`
-	RPLogsPath string `toml:"rp_logs_path"`
+	Points               []int  `toml:"points"`
+	Ballast              []int  `toml:"ballast"`
+	RPLogsPath           string `toml:"rp_logs_path"`
+	ClassificationIdsUrl string `toml:"classification_ids_url"`
 }
 
 func LoadConfig(cfg *ServerConfig, fileName string) error {

@@ -25,6 +25,7 @@ require (
 	github.com/go-chi/render v1.0.3
 	github.com/hydronica/toml v0.5.0
 	github.com/montanaflynn/stats v0.7.1
+	github.com/pkg/errors v0.9.1
 	github.com/samber/slog-chi v1.10.1
 	github.com/tealeg/xlsx/v3 v3.3.6
 	github.com/tebeka/selenium v0.9.9

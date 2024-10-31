@@ -1,3 +1,5 @@
 .history
 deploy/
 !deploy/Dockerfile
+tmp
+*.log
