@@ -58,7 +58,7 @@ $(document).ready(function() {
             beforeSend:  function(){$("#loadingoverlay").fadeIn();},
             complete:  function(){$("#loadingoverlay").fadeOut();},
             success : function() {              
-                alert('Ballast clear correctly');
+                alert('Ballast saved correctly');
             },
             error : function()
             {
